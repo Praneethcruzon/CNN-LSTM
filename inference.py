@@ -33,6 +33,10 @@ cnn_lstm = CNN_LSTM()
 cnn_lstm.eval()
 cnn_lstm = cnn_lstm.to(device)
 
-print(stacked_image.shape)
+
 
 x = cnn_lstm(stacked_image)
+
+print(x.shape)
+
+print(x)

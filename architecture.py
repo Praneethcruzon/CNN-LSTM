@@ -57,15 +57,29 @@ class CNN_LSTM(nn.Module):
         self.Conv6 = self._block(
             in_channels = 512, out_channels = 1024, kernel_size = 3, padding = 1,
             stride = 2, name = "Conv 6", activation_needed = False
-        )    
+        )   
+
+
         # Pooling Layer
         self.max_pooling = nn.MaxPool2d(
             kernel_size = 2,
             stride = 1
         )
+        
+        # self.flatten = nn.Flatten()
 
-    def forward(self, x):
-        print(x.shape)
+        # Output size of CNN layer [2, 1024, 5, 20]
+        # Batch (stacked images), number of images, height, width of image.
+
+        self.lstm = nn.LSTM(            
+            input_size = 1024 * 5 * 20,
+            hidden_size = 10, # As specified in paper. 
+            batch_first = True,
+            num_layers = 2
+        )
+
+    def CNN(self, x):
+
         x = self.max_pooling(self.Conv1(x)); print(x.shape)
         x = self.max_pooling(self.Conv2(x)); print(x.shape)
         x = self.Conv3(x); print(x.shape)
@@ -76,9 +90,27 @@ class CNN_LSTM(nn.Module):
         x = self.max_pooling(self.Conv5_1(x)); print(x.shape)
         x = self.Conv6(x); print(x.shape)
 
-        # should add LSTM Layers
-
         return x
+
+
+    def forward(self, x):
+
+        # Batch size default to 1
+        num_frames, channels, height, width = x.shape
+        print(num_frames, channels, height, width)
+
+        cnn_input = x.view(num_frames, channels, height, width)
+        print("CNN INPUT ", cnn_input.shape)
+        cnn_out = self.CNN(cnn_input)
+        print("CNN OUTPUT ", cnn_out.shape)
+
+        lstm_in = cnn_out.view(1, num_frames, -1) # First Argument = 1 is the batch size
+        print("LSTM INPUT ", lstm_in.shape)
+        lstm_out, _ = self.lstm(lstm_in) # output will be in following format lstm_out, (hidden_state, cell_state)
+    
+        return lstm_out       
+
+        # return x
 
     def _block(self, in_channels, out_channels, kernel_size, padding, stride, name, activation_needed: bool):
 

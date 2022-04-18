@@ -77,6 +77,7 @@ class CNN_LSTM(nn.Module):
             batch_first = True,
             num_layers = 2
         )
+        # self.lstm = nn.LSTM(1024 * 5 * 20, 10, 1, batch_first = True)
 
     def CNN(self, x):
 
@@ -99,6 +100,10 @@ class CNN_LSTM(nn.Module):
         num_frames, channels, height, width = x.shape
         print(num_frames, channels, height, width)
 
+        
+        # Reference : https://discuss.pytorch.org/t/solved-concatenate-time-distributed-cnn-with-lstm/15435" 
+        # LSTM's input size should be -- input_size = 1024 * 5 * 20, batch_first = True
+
         cnn_input = x.view(num_frames, channels, height, width)
         print("CNN INPUT ", cnn_input.shape)
         cnn_out = self.CNN(cnn_input)
@@ -108,7 +113,22 @@ class CNN_LSTM(nn.Module):
         print("LSTM INPUT ", lstm_in.shape)
         lstm_out, _ = self.lstm(lstm_in) # output will be in following format lstm_out, (hidden_state, cell_state)
     
-        return lstm_out       
+        return lstm_out      
+
+        """ 
+        # Reference : https://github.com/PacktPublishing/PyTorch-Computer-Vision-Cookbook/blob/master/Chapter10/Chapter10.ipynb
+        # self.lstm = nn.LSTM(1024 * 5 * 20, 10, 1, batch_first = True)
+        cnn_output = self.CNN(x[0])
+        print(f"CNN output 1 : {cnn_output.view(1,1,1024*5*20).shape}")
+        lstm_output,  (hn, cn) = self.lstm(cnn_output.view(1,1,1024*5*20))
+        print(f"LSTM output 1 : {lstm_output.shape}")
+        cnn_output = self.CNN(x[1])
+        print(f"CNN output 2 : {cnn_output.view(1,1,1024*5*20).shape}")
+        lstm_output, _ = self.lstm(cnn_output.view(1,1,1024*5*20))
+        print(f"LSTM output 2 : {lstm_output.shape}")
+        return lstm_output 
+        """
+
 
         # return x
 

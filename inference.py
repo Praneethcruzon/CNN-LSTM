@@ -7,8 +7,8 @@ from architecture import CNN_LSTM
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-image = cv2.imread("./data/image.jpg")
-image_2 = cv2.imread("./data/image1.jpg")
+image = cv2.imread("data/image.jpeg")
+image_2 = cv2.imread("data/image1.jpeg")
 
 image = cv2.resize(image, (1280, 348), interpolation = cv2.INTER_LINEAR)
 image_2 = cv2.resize(image_2, (1280,348), interpolation = cv2.INTER_LINEAR)
@@ -37,6 +37,6 @@ cnn_lstm = cnn_lstm.to(device)
 
 x = cnn_lstm(stacked_image)
 
-print(x.shape)
+print("Final Shape - \n",x.shape)
 
 print(x)

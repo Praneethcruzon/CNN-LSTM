@@ -78,6 +78,11 @@ class CNN_LSTM(nn.Module):
             num_layers = 2
         )
         # self.lstm = nn.LSTM(1024 * 5 * 20, 10, 1, batch_first = True)
+        self.fc1 = nn.Linear(10, 6)
+        # self.fc2 = nn.Linear(512, 256)
+        # self.fc3 = nn.Linear(256, 128)
+        # self.fc4 = nn.Linear(128,64)
+        # self.fc5 = nn.Linear(10,6)
 
     def CNN(self, x):
 
@@ -112,8 +117,17 @@ class CNN_LSTM(nn.Module):
         lstm_in = cnn_out.view(1, num_frames, -1) # First Argument = 1 is the batch size
         print("LSTM INPUT ", lstm_in.shape)
         lstm_out, _ = self.lstm(lstm_in) # output will be in following format lstm_out, (hidden_state, cell_state)
-    
-        return lstm_out      
+        fc_1 = self.fc1(lstm_out[:,1])
+        print("Forward - 1 \n",fc_1.shape)
+        # fc_2 = self.fc2(fc_1)
+        # print("Forward - 2 \n",fc_2.shape)
+        # fc_3 = self.fc3(fc_2)
+        # print("Forward - 3 \n",fc_3.shape)
+        # fc_4 = self.fc4(fc_3)
+        # print("Forward - 4 \n",fc_4.shape)
+        # fc_5 = self.fc5(fc_4)
+        # print("Forward - 5 \n",fc_5.shape)
+        return fc_1     
 
         """ 
         # Reference : https://github.com/PacktPublishing/PyTorch-Computer-Vision-Cookbook/blob/master/Chapter10/Chapter10.ipynb

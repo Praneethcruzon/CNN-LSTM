@@ -7,8 +7,8 @@ from architecture import CNN_LSTM
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-image = cv2.imread("data/image.jpeg")
-image_2 = cv2.imread("data/image1.jpeg")
+image = cv2.imread("data/image1.jpeg")
+image_2 = cv2.imread("data/image2.jpeg")
 
 image = cv2.resize(image, (1280, 348), interpolation = cv2.INTER_LINEAR)
 image_2 = cv2.resize(image_2, (1280,348), interpolation = cv2.INTER_LINEAR)
